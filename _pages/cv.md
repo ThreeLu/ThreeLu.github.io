@@ -9,56 +9,21 @@ redirect_from:
 
 {% include base_path %}
 
-Education
+教育经历
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+* 数学与应用数学，数学与统计学院，山东大学，2022-至今
+* 运筹学与控制论，数学国家高层次人才培养中心，山东大学，录取。
 
-Work experience
-======
-* Spring 2024: Academic Pages Collaborator
-  * GitHub University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
 
-* Fall 2015: Research Assistant
-  * GitHub University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+兴趣爱好
+======
+* 收集并调试LaTeX模板，利用LaTeX制作各类精美文档。
+* 音乐
+  * 流行音乐：专注于听Westlife、孙燕姿、邓紫棋、陈奕迅的歌曲。
+  * 古典音乐：专注于听贝多芬、勃拉姆斯、拉赫玛尼诺夫、巴赫、柴可夫斯基、德沃夏克、约翰施特劳斯等人所写的“俗”的音乐。
+  * 对钢琴与部分弦乐（小提琴，二胡）有一定的兴趣。
+  * 对利用Lilypond敲乐谱情有独钟。
+* 运动
+  * 对足球较为热爱，但近年来不踢了。
+  * 有一定的乒乓球水平，奈何基础不扎实，提升希望渺茫。
 
-* Summer 2015: Research Assistant
-  * GitHub University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
-  
-Skills
-======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
-
-Publications
-======
-  <ul>{% for post in site.publications reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Talks
-======
-  <ul>{% for post in site.talks reversed %}
-    {% include archive-single-talk-cv.html  %}
-  {% endfor %}</ul>
-  
-Teaching
-======
-  <ul>{% for post in site.teaching reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Service and leadership
-======
-* Currently signed in to 43 different slack teams
