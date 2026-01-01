@@ -1,7 +1,7 @@
 ---
 title: "Exponentially Small Probabilities"
 collection: publication
-category: talks
+category: manuscripts
 permalink: /publication/2026-01-01-Expoentially-small-probability
 excerpt: '这篇短文主要是梳理概率方法的工具。'
 date: 2026-01-01
