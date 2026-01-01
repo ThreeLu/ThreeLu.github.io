@@ -23,7 +23,7 @@ repository               : "ThreeLu/ThreeLu.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
+  avatar           : "smallolu.png"
   name             : "路宇轩"
   pronouns         : # example: "she/her"  
   bio              : "山东大学数学专业在读，研究方向为图论与组合数学"
