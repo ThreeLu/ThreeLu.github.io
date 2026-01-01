@@ -6,12 +6,8 @@ permalink: /publication/2026-01-01-Expoentially-small-probability
 excerpt: '这篇短文主要是梳理概率方法的工具。'
 date: 2026-01-01
 venue: '讨论班讲义资料'
-paperurl: 'https://ThreeLu.github.io/files/paper3.pdf'
-citation: 'Your Name, You. (2024). &quot;Paper Title Number 3.&quot; <i>GitHub Journal of Bugs</i>. 1(3).'
----
-
-# Exponentially Small Probabilities
-
+paperurl: 'files/Exponentially Small Probabilities.pdf'
+citation: 'A famous book.'
 ---
 
 ## Chernoff Bound
@@ -69,11 +65,11 @@ Let $\varphi(x) = (1 + x) \log x - x$ (for $x \ge -1$), we have:
   $$
 - Since $\varphi(0) = \varphi'(0) = 0$ and 
   $$
-  \varphi''(x) = \frac{1}{1 + x} \ge \frac{1}{(1 + x \slash 3 )^3} = \left( \frac{x^2}{2(1 + x \slash 3)} \right)''. 
+  \varphi''(x) = \frac{1}{1 + x} \ge \frac{1}{(1 + x/3 )^3} = \left( \frac{x^2}{2(1 + x/3)} \right)''. 
   $$ 
   thus
   $$
-  \varphi(x) \ge \frac{x^2}{2(1 + x \slash 3)}.
+  \varphi(x) \ge \frac{x^2}{2(1 + x/3)}.
   $$
 
 ### A Large But Simpler Bound
@@ -96,9 +92,9 @@ $$
 $$
 
 ### Chernoff Bound
-Using $\varphi(x) \ge x^2\slash (2(1 + x \slash 3))$, we have 
+Using $\varphi(x) \ge x^2/(2(1 + x/3))$, we have 
 $$
-\exp \left\lbrace -\lambda \varphi\left( \frac{t}{\lambda} \right) \right\rbrace \le \exp \left\lbrace -\frac{t^2}{2(\lambda +t \slash 3) }\right\rbrace, \quad \exp \left\lbrace -\lambda \varphi\left( \frac{-t}{\lambda} \right) \right\rbrace \le \exp \left\lbrace -\frac{t^2}{2\lambda }\right\rbrace.
+\exp \left\lbrace -\lambda \varphi\left( \frac{t}{\lambda} \right) \right\rbrace \le \exp \left\lbrace -\frac{t^2}{2(\lambda + t/3) }\right\rbrace, \quad \exp \left\lbrace -\lambda \varphi\left( \frac{-t}{\lambda} \right) \right\rbrace \le \exp \left\lbrace -\frac{t^2}{2\lambda }\right\rbrace.
 $$
 Therefore, we have the Chernoff Bound.
 
@@ -106,14 +102,14 @@ Therefore, we have the Chernoff Bound.
 > If $X \in \operatorname{Bi}(n,p)$ and $\lambda = np$, we have
 > $$
 > \begin{aligned}
-> 	\mathbb{P}(X \ge \mathbb{E}X + t) &\le \exp \left\lbrace -\frac{t^2}{2(\lambda +t \slash 3) }\right\rbrace, \quad t\ge 0 \\
+> 	\mathbb{P}(X \ge \mathbb{E}X + t) &\le \exp \left\lbrace -\frac{t^2}{2(\lambda + t/3) }\right\rbrace, \quad t\ge 0 \\
 > 	 \mathbb{P}(X \le \mathbb{E}X - t)  &\le \exp \left\lbrace -\frac{t^2}{2\lambda }\right\rbrace, \quad t \ge 0
 > \end{aligned}.
 > $$
 
 ### The exponents in the Estimates
 $$
-\mathbb{P}(X \ge \mathbb{E}X + t) \le \exp \left\lbrace -\frac{t^2}{2(\lambda +t \slash 3) }\right\rbrace, \quad t\ge 0.
+\mathbb{P}(X \ge \mathbb{E}X + t) \le \exp \left\lbrace -\frac{t^2}{2(\lambda + t/3) }\right\rbrace, \quad t\ge 0.
 $$
 When $t$ is small (i.e., $t \le \lambda$), the exponent is $\Theta(t^2)$.  
 
@@ -122,11 +118,11 @@ In particular, let $t = \varepsilon \mathbb{E}X$, we have
 $$
 \mathbb{P}(X - \mathbb{E}X \ge \varepsilon \mathbb{E}X) \le \exp \left\lbrace -\mathbb{E}X\cdot  \varphi\left( \frac{\varepsilon\mathbb{E}X}{\mathbb{E}X}  \right)  \right\rbrace = \exp \left\lbrace - \varphi(\varepsilon) \right\rbrace \le\exp \left\lbrace -\frac{\varepsilon^2}{3}\mathbb{E}X \right\rbrace. 
 $$
-since $\varphi(-\varepsilon) > \varphi(\varepsilon) \ge \varepsilon^2 \slash 3$ when $\varepsilon \le 2 \slash 3$. Therefore, we have the Chernoff Bound.
+since $\varphi(-\varepsilon) > \varphi(\varepsilon) \ge \varepsilon^2 / 3$ when $\varepsilon \le 2 / 3$. Therefore, we have the Chernoff Bound.
 
 ### Chernoff Bound (Final Version)
 > **Theorem (Chernoff Bound)**  
-> If $X \sim \operatorname{Bi}(n,p)$ and for any $0 < \varepsilon <  3 \slash 2$, we have 
+> If $X \sim \operatorname{Bi}(n,p)$ and for any $0 < \varepsilon <  3/2$, we have 
 > $$
 > \mathbb{P}(|X - \mathbb{E}X| \ge \varepsilon \mathbb{E}X) \le 2\exp \left\lbrace -\frac{\varepsilon^2\mathbb{E}X }{3}\right\rbrace.
 > $$ 
@@ -153,7 +149,7 @@ If $\mathbb{E}X = o(\sqrt{n})$, McDiarmid's inequality doesn't work. **The depen
 > 1. $X$ is $C$-Lipschitz.
 > 2. For any $s$, and sample $\omega$ with $X(\omega) > s$, there are $\le rs$ indices of $\omega$, so that for all other samples $\omega'$ that agree with $\omega$ on those $\le rs$ indices, $X(\omega') > s$ also.
 > 
-> Then, for all $t > \sqrt{ \mathbb{E}X }$, if $\mathbb{E}X$ is sufficiently large and $\beta < 1 \slash 8c^2r$, we have:
+> Then, for all $t > \sqrt{ \mathbb{E}X }$, if $\mathbb{E}X$ is sufficiently large and $\beta < 1 / 8c^2r$, we have:
 > $$
 > \mathbb{P}(|X - \mathbb{E}X| \ge t) \le 2\exp \left\lbrace -\frac{ \beta t^2 }{\mathbb{E}X}\right\rbrace.
 > $$
