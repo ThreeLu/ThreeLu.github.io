@@ -88,8 +88,6 @@ publication_category:
     title: '读书笔记'
   manuscripts:
     title: '讨论班讲义'
-  conferences:
-    title: '生活记录'
 
 # Site Settings
 teaser                   :  # filename of teaser fallback teaser image placed in /images/ for social media previews
