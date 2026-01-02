@@ -108,20 +108,20 @@ comments:
     colorscheme          : # "light" (default), "dark"
 staticman:
   allowedFields          : ['name', 'email', 'url', 'message']
-  branch                 : "gh-pages" # "master", "gh-pages"
-  commitMessage          : "New comment."
+  branch                 : "main" # 替换为你的仓库默认分支（比如 main 或 master）
+  commitMessage          : "新增评论：{{ options.slug }}"
   filename               : comment-{@timestamp}
   format                 : "yml"
-  moderation             : true
-  path                   : "_data/comments/{options.slug}"
+  moderation             : true # 开启审核（避免垃圾评论）
+  path                   : "_data/comments/layout-comments" # 评论存储路径
   requiredFields         : ['name', 'email', 'message']
   transforms:
-    email                : "md5"
+    email                : "md5" # 加密邮箱保护隐私
   generatedFields:
     date:
       type               : "date"
       options:
-        format           : "iso8601" # "iso8601" (default), "timestamp-seconds", "timestamp-milliseconds"
+        format           : "iso8601"
 atom_feed:
   hide                   : false     # change to true to hide the RSS feed in the footer
   path                   : # blank (default) uses feed.xml
