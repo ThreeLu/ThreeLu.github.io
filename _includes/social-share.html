@@ -1,145 +1,48 @@
 {% include base_path %}
 
-<!-- ========== 修复关键：使用 IIFE 确保函数定义安全 ========== -->
-<script>
-  (function() {
-    // 检查函数是否已定义，避免覆盖
-    if (typeof window.openWechatModal !== 'function') {
-      window.openWechatModal = function(type) {
-        console.log('[FIX] openWechatModal called', type);
-        const modal = document.getElementById('wechat-share-modal');
-        const title = document.getElementById('wechat-modal-title');
-        const tip = document.getElementById('wechat-modal-tip');
-        
-        if (!modal) {
-          console.error('[FIX] WeChat modal not found!');
-          return;
-        }
-        
-        if (type === 'friend') {
-          title.innerText = '分享到微信好友';
-          tip.innerText = '扫码后：\n1. 点击右上角「...」\n2. 选择「转发给朋友」';
-        } else if (type === 'moments') {
-          title.innerText = '分享到微信朋友圈';
-          tip.innerText = '扫码后：\n1. 点击右上角「...」\n2. 选择「分享到朋友圈」';
-        }
-        
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      };
-    }
+<section class="page__share">
+  {% if site.data.ui-text[site.locale].share_on_label %}
+    <h4 class="page__share-title">{{ site.data.ui-text[site.locale].share_on_label | default: "Share on" }}</h4>
+  {% endif %}
 
-    if (typeof window.closeWechatModal !== 'function') {
-      window.closeWechatModal = function() {
-        const modal = document.getElementById('wechat-share-modal');
-        if (!modal) return;
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-      };
-    }
-
-    if (typeof window.openQQModal !== 'function') {
-      window.openQQModal = function() {
-        console.log('[FIX] openQQModal called');
-        const modal = document.getElementById('qq-share-modal');
-        if (!modal) {
-          console.error('[FIX] QQ modal not found!');
-          return;
-        }
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      };
-    }
-
-    if (typeof window.closeQQModal !== 'function') {
-      window.closeQQModal = function() {
-        const modal = document.getElementById('qq-share-modal');
-        if (!modal) return;
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-      };
-    }
-
-    if (typeof window.copyQQLink !== 'function') {
-      window.copyQQLink = function() {
-        const input = document.getElementById('qq-share-link');
-        if (!input) {
-          console.error('[FIX] QQ share link input not found!');
-          return;
-        }
-        const link = input.value;
-        
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(link).then(() => {
-            alert('链接复制成功！可直接粘贴到QQ分享');
-          }).catch((err) => {
-            console.error('[FIX] Clipboard write failed:', err);
-            input.select();
-            document.execCommand('copy');
-            alert('链接复制成功！可直接粘贴到QQ分享');
-          });
-        } else {
-          input.select();
-          document.execCommand('copy');
-          alert('链接复制成功！可直接粘贴到QQ分享');
-        }
-      };
-    }
-
-    // 确认函数已正确定义
-    console.log('[FIX] openWechatModal:', typeof window.openWechatModal);
-    console.log('[FIX] openQQModal:', typeof window.openQQModal);
-  })();
-</script>
-
-<section class="page__share" style="margin: 2rem 0; padding: 1rem; border-top: 1px solid #eee; border-bottom: 1px solid #eee;">
-  <h4 class="page__share-title" style="margin-bottom: 1rem; font-size: 1rem; color: #333; text-align: left;">分享本文</h4>
-
-  <!-- 1. 微信好友 -->
-  <a href="javascript:void(0);" class="btn btn--wechat-friend" title="分享到微信好友" 
-     onclick="window.openWechatModal('friend')"
-     style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; margin: 0.3rem; border: 1px solid #ddd; border-radius: 4px; color: #fff; text-decoration: none; background: #07c160; cursor: pointer;">
-    <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信好友</span>
+  <!-- 原有平台 -->
+  <a href="https://www.facebook.com/sharer/sharer.php?u={{ base_path }}{{ page.url | url_encode }}" class="btn btn--facebook" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Facebook">
+    <i class="fab fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+  <a href="https://x.com/intent/post?text={{ base_path }}{{ page.url | url_encode }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X">
+    <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X (formerly Twitter)</span>
+  </a>
+  <!-- 新增 QQ 分享 -->
+  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | default: '分享内容' | url_encode }}" class="btn btn--qq" target="_blank" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
+    <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
   </a>
 
-  <!-- 2. 微信朋友圈 -->
-  <a href="javascript:void(0);" class="btn btn--wechat-moments" title="分享到微信朋友圈"
-     onclick="window.openWechatModal('moments')"
-     style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; margin: 0.3rem; border: 1px solid #ddd; border-radius: 4px; color: #fff; text-decoration: none; background: #07c160; cursor: pointer;">
-    <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信朋友圈</span>
-  </a>
-
-  <!-- 3. QQ分享 -->
-  <a href="javascript:void(0);" class="btn btn--qq" title="分享到QQ"
-     onclick="window.openQQModal()"
-     style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; margin: 0.3rem; border: 1px solid #ddd; border-radius: 4px; color: #fff; text-decoration: none; background: #12b7f5; cursor: pointer;">
-    <i class="fab fa-qq" aria-hidden="true"></i><span> QQ分享</span>
-  </a>
-
-  <!-- 微信分享弹窗 -->
-  <div id="wechat-share-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0,0,0,0.5);">
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 2rem; border-radius: 8px; max-width: 300px; text-align: center;">
-      <h5 id="wechat-modal-title" style="margin: 0 0 1rem; font-size: 1rem; color: #333;">分享到微信好友</h5>
-      <p id="wechat-modal-tip" style="margin: 0 0 1rem; font-size: 0.85rem; color: #666;">扫码后：<br>1. 点击右上角「...」<br>2. 选择「转发给朋友」</p>
-      <img id="wechat-qrcode-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ base_path | append: page.url | url_encode }}" alt="微信分享二维码" style="width: 200px; height: 200px; margin: 0 auto;">
-      <button onclick="window.closeWechatModal()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #07c160; color: #fff; cursor: pointer;">关闭</button>
-    </div>
+  <!-- 新增 微信分享（复制链接 + 提示） -->
+  <button class="btn btn--wechat" id="wechat-share-btn" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信">
+    <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信</span>
+  </button>
+  <!-- 微信分享提示（默认隐藏） -->
+  <div id="wechat-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
+    链接已复制：<span id="copy-url">{{ base_path }}{{ page.url }}</span>，打开微信粘贴分享即可
   </div>
 
-  <!-- QQ分享弹窗 -->
-  <div id="qq-share-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0,0,0,0.5);">
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 2rem; border-radius: 8px; max-width: 300px; text-align: center;">
-      <h5 style="margin: 0 0 1rem; font-size: 1rem; color: #333;">分享到QQ</h5>
-      <p style="margin: 0 0 1rem; font-size: 0.85rem; color: #666;">方式1：扫码分享 | 方式2：复制链接到QQ</p>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ base_path | append: page.url | url_encode }}" alt="QQ分享二维码" style="width: 200px; height: 200px; margin: 0 auto;">
-      <div style="margin-top: 1rem;">
-        <input type="text" id="qq-share-link" value="{{ base_path | append: page.url }}" readonly style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem; color: #333;">
-        <button onclick="window.copyQQLink()" style="margin-top: 0.5rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #12b7f5; color: #fff; cursor: pointer;">复制链接</button>
-      </div>
-      <button onclick="window.closeQQModal()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #12b7f5; color: #fff; cursor: pointer;">关闭</button>
-    </div>
-  </div>
+  <!-- 复制链接 JS -->
+  <script>
+    const wechatBtn = document.getElementById('wechat-share-btn');
+    const wechatTip = document.getElementById('wechat-tip');
+    const copyUrl = document.getElementById('copy-url').textContent;
+
+    wechatBtn.addEventListener('click', () => {
+      // 复制链接到剪贴板
+      navigator.clipboard.writeText(copyUrl).then(() => {
+        wechatTip.style.display = 'block';
+        // 3秒后隐藏提示
+        setTimeout(() => {
+          wechatTip.style.display = 'none';
+        }, 3000);
+      }).catch(err => {
+        alert('复制失败，请手动复制：' + copyUrl);
+      });
+    });
+  </script>
 </section>
-
-<!-- Font Awesome 链接 -->
-<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" type="text/css">
