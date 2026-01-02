@@ -5,9 +5,8 @@
     <h4 class="page__share-title">{{ site.data.ui-text[site.locale].share_on_label | default: "Share on" }}</h4>
   {% endif %}
 
-  <!-- 样式直接嵌入，无需单独CSS文件 -->
+  <!-- 内嵌样式 -->
   <style>
-    /* 分享按钮通用样式 */
     .page__share .btn {
       display: inline-block;
       padding: 8px 16px;
@@ -24,88 +23,99 @@
       opacity: 0.9;
       text-decoration: none;
     }
-    /* 各平台按钮样式 */
     .btn--facebook { background-color: #1877f2; }
     .btn--x { background-color: #000000; }
     .btn--qq { background-color: #12B7F5; }
     .btn--wechat { background-color: #07C160; }
-    /* 微信二维码弹窗样式 */
-    #wechat-qrcode-modal {
+    /* 微信提示弹窗 */
+    #wechat-tip {
       display: none;
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #fff;
-      padding: 20px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 20px 30px;
       border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
       z-index: 9999;
-    }
-    #wechat-qrcode-modal p {
       text-align: center;
-      margin-bottom: 10px;
-      font-size: 14px;
     }
-    #wechat-qrcode {
-      width: 200px;
-      height: 200px;
-      margin: 0 auto;
-    }
-    #wechat-qrcode-modal button {
-      display: block;
-      margin: 10px auto;
-      padding: 8px 16px;
+    #wechat-tip button {
+      margin: 10px auto 0;
+      padding: 6px 12px;
       cursor: pointer;
-      border: 1px solid #ddd;
+      border: none;
       border-radius: 4px;
-      background: #f5f5f5;
-    }
-    #wechat-qrcode-modal button:hover {
-      background: #eee;
+      background: #fff;
+      color: #333;
     }
   </style>
 
   <!-- Facebook 分享 -->
-  <a href="https://www.facebook.com/sharer/sharer.php?u={{ base_path | append: page.url | url_encode }}" class="btn btn--facebook" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Facebook">
+  <a href="https://www.facebook.com/sharer/sharer.php?u={{ base_path | append: page.url | url_encode }}" class="btn btn--facebook" title="Share on Facebook">
     <i class="fab fa-facebook" aria-hidden="true"></i><span> Facebook</span>
   </a>
 
-  <!-- X (原Twitter) 分享 -->
-  <a href="https://x.com/intent/post?text={{ base_path | append: page.url | url_encode }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X">
+  <!-- X 分享 -->
+  <a href="https://x.com/intent/post?text={{ base_path | append: page.url | url_encode }}" class="btn btn--x" title="Share on X">
     <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X</span>
   </a>
 
   <!-- QQ 分享 -->
-  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | url_encode }}" class="btn btn--qq" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
+  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | url_encode }}" class="btn btn--qq" title="分享到QQ">
     <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
   </a>
 
-  <!-- 微信分享（简化版：提示复制链接，避免二维码脚本依赖） -->
-  <a href="javascript:void(0);" class="btn btn--wechat" onclick="copyWechatLink()" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信">
+  <!-- 微信分享按钮（移除内联onclick） -->
+  <a href="javascript:void(0);" class="btn btn--wechat" id="wechat-share-btn" title="分享到微信">
     <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信</span>
   </a>
 
-  <!-- 微信复制链接提示（替代二维码，无外部依赖） -->
-  <div id="wechat-tip" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);color:#fff;padding:20px;border-radius:8px;z-index:9999;">
+  <!-- 微信提示弹窗 -->
+  <div id="wechat-tip">
     链接已复制！粘贴到微信分享即可
-    <button onclick="document.getElementById('wechat-tip').style.display='none'" style="display:block;margin:10px auto;padding:8px 16px;cursor:pointer;">关闭</button>
+    <button onclick="document.getElementById('wechat-tip').style.display='none'">关闭</button>
   </div>
 
+  <!-- 脚本移到最后，确保DOM加载完成后执行 -->
   <script>
-    // 微信分享：复制链接到剪贴板（无外部脚本依赖）
-    function copyWechatLink() {
-      const shareUrl = '{{ base_path | append: page.url }}';
-      // 复制到剪贴板
-      navigator.clipboard.writeText(shareUrl).then(() => {
+    // 定义全局函数（确保可访问）
+    window.copyWechatLink = function() {
+      // 拼接完整URL（Liquid渲染后转成纯字符串）
+      const shareUrl = "{{ base_path }}{{ page.url }}";
+      // 兼容剪贴板API
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          document.getElementById('wechat-tip').style.display = 'block';
+          // 3秒自动关闭
+          setTimeout(() => {
+            document.getElementById('wechat-tip').style.display = 'none';
+          }, 3000);
+        }).catch(err => {
+          alert('复制失败，请手动复制链接：\n' + shareUrl);
+        });
+      } else {
+        // 兼容旧浏览器
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
         document.getElementById('wechat-tip').style.display = 'block';
-        // 3秒后自动关闭提示
         setTimeout(() => {
           document.getElementById('wechat-tip').style.display = 'none';
         }, 3000);
-      }).catch(err => {
-        alert('复制失败，请手动复制链接：' + shareUrl);
-      });
-    }
+      }
+    };
+
+    // DOM加载完成后绑定事件（核心修复）
+    document.addEventListener('DOMContentLoaded', function() {
+      const wechatBtn = document.getElementById('wechat-share-btn');
+      if (wechatBtn) {
+        wechatBtn.addEventListener('click', window.copyWechatLink);
+      }
+    });
   </script>
 </section>
