@@ -5,142 +5,63 @@
     <h4 class="page__share-title">{{ site.data.ui-text[site.locale].share_on_label | default: "Share on" }}</h4>
   {% endif %}
 
-  <!-- 强制加载 Font Awesome（解决图标依赖） -->
-  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- 原有平台 -->
-  <a href="https://www.facebook.com/sharer/sharer.php?u={{ base_path }}{{ page.url | url_encode }}" class="btn btn--facebook" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Facebook">
+  <!-- 保留 Facebook -->
+  <a href="https://www.facebook.com/sharer/sharer.php?u={{ base_path | append: page.url | url_encode }}" class="btn btn--facebook" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Facebook">
     <i class="fab fa-facebook" aria-hidden="true"></i><span> Facebook</span>
   </a>
-  <a href="https://x.com/intent/post?text={{ base_path }}{{ page.url | url_encode }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X">
-    <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X </span>
+
+  <!-- 保留 X (原Twitter) -->
+  <a href="https://x.com/intent/post?text={{ base_path | append: page.url | url_encode }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X">
+    <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X</span>
   </a>
 
-  <!-- 差异化 QQ 分享容器（增加兜底样式，避免渲染失败） -->
-  <div id="qq-share-container" style="display: inline-block; margin: 0 4px;"></div>
+  <!-- 新增 QQ 分享 -->
+  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | url_encode }}" class="btn btn--qq" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
+    <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
+  </a>
 
-  <!-- 微信分享（不变，补全图标样式） -->
-  <button class="btn btn--wechat" id="wechat-share-btn" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信" style="display: inline-block; margin: 0 4px;">
+  <!-- 新增 微信 分享 (注：微信网页分享需扫码，此处做常用实现) -->
+  <a href="javascript:void(0);" class="btn btn--wechat" id="wechat-share" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信">
     <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信</span>
-  </button>
-  <div id="wechat-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
-    链接已复制：<span id="copy-url">{{ base_path }}{{ page.url }}</span>，打开微信粘贴分享即可
+  </a>
+
+  <!-- 微信分享二维码弹窗 (可选，如需扫码功能添加) -->
+  <div id="wechat-qrcode-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 20px rgba(0,0,0,0.2);z-index:9999;">
+    <p style="text-align:center;margin-bottom:10px;">扫码分享到微信</p>
+    <div id="wechat-qrcode" style="width:200px;height:200px;margin:0 auto;"></div>
+    <button onclick="document.getElementById('wechat-qrcode-modal').style.display='none'" style="display:block;margin:10px auto;padding:8px 16px;cursor:pointer;">关闭</button>
   </div>
 
-  <!-- 补充按钮基础样式（避免图标/按钮错位） -->
-  <style>
-    .btn {
-      display: inline-block;
-      padding: 6px 12px;
-      margin: 0 4px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      color: #fff;
-      text-decoration: none;
-    }
-    .btn--qq {
-      background: #12b7f5;
-    }
-    .btn--wechat {
-      background: #07c160;
-    }
-    .btn--facebook {
-      background: #1877f2;
-    }
-    .btn--x {
-      background: #000;
-    }
-    /* 图标强制显示样式 */
-    .btn i.fab {
-      margin-right: 4px;
-      display: inline-block !important;
-    }
-  </style>
-
   <script>
-    // ========== 核心：设备检测（增加容错，避免解析失败） ==========
-    const userAgent = navigator.userAgent || '';
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-    // 固化分享链接（避免Liquid变量解析失败）
-    const shareUrl = "{{ base_path }}{{ page.url }}".replace(/\/+/g, '/'); // 去重斜杠
-    const pageTitle = "{{ page.title | default: '分享内容' }}" || '分享内容';
-
-    // ========== 动态渲染 QQ 分享按钮（增加兜底，确保渲染） ==========
-    const qqContainer = document.getElementById('qq-share-container');
-    // 兜底：如果容器获取失败，手动创建
-    if (!qqContainer) {
-      const newContainer = document.createElement('div');
-      newContainer.id = 'qq-share-container';
-      newContainer.style = 'display: inline-block; margin: 0 4px;';
-      document.querySelector('.page__share').appendChild(newContainer);
-    }
-
-    if (isMobile) {
-      // 移动端：唤起QQ客户端（补全图标类名）
-      qqContainer.innerHTML = `
-        <a href="mqq://share/menu?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(pageTitle)}" 
-           class="btn btn--qq" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           title="Share on QQ">
-          <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
-        </a>
-        <div id="mobile-qq-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
-          未唤起QQ？请手动复制链接：<span>${shareUrl}</span>
-        </div>
-      `;
-      // 绑定事件（增加容错）
-      const qqBtn = qqContainer.querySelector('.btn--qq');
-      if (qqBtn) {
-        qqBtn.addEventListener('click', () => {
-          const tip = document.getElementById('mobile-qq-tip');
-          if (tip) {
-            tip.style.display = 'block';
-            setTimeout(() => { tip.style.display = 'none'; }, 5000);
-          }
-        });
+    // 微信分享二维码生成逻辑 (需引入 qrcode.js，可自行CDN引入)
+    document.getElementById('wechat-share').addEventListener('click', function() {
+      const shareUrl = '{{ base_path | append: page.url | url_encode }}';
+      const modal = document.getElementById('wechat-qrcode-modal');
+      
+      // 引入qrcode.js (如果未全局引入)
+      if (!window.QRCode) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+        script.onload = function() {
+          generateWechatQRCode(shareUrl);
+        };
+        document.body.appendChild(script);
+      } else {
+        generateWechatQRCode(shareUrl);
       }
-    } else {
-      // 桌面端：复制链接（确保图标显示）
-      qqContainer.innerHTML = `
-        <button class="btn btn--qq" id="pc-qq-share-btn" title="Share on QQ">
-          <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
-        </button>
-        <div id="pc-qq-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
-          QQ分享链接已复制：<span>${shareUrl}</span>，打开QQ粘贴分享即可
-        </div>
-      `;
-      // 绑定事件（增加容错）
-      const qqBtn = document.getElementById('pc-qq-share-btn');
-      if (qqBtn) {
-        qqBtn.addEventListener('click', () => {
-          const tip = document.getElementById('pc-qq-tip');
-          navigator.clipboard.writeText(shareUrl).then(() => {
-            if (tip) tip.style.display = 'block';
-            setTimeout(() => { if (tip) tip.style.display = 'none'; }, 3000);
-          }).catch(err => {
-            alert('QQ链接复制失败，请手动复制：' + shareUrl);
-          });
-        });
-      }
-    }
+      
+      modal.style.display = 'block';
+    });
 
-    // ========== 微信复制逻辑（增加容错） ==========
-    const wechatBtn = document.getElementById('wechat-share-btn');
-    const wechatTip = document.getElementById('wechat-tip');
-    const copyUrl = document.getElementById('copy-url')?.textContent || shareUrl;
-
-    if (wechatBtn) {
-      wechatBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(copyUrl).then(() => {
-          if (wechatTip) wechatTip.style.display = 'block';
-          setTimeout(() => {
-            if (wechatTip) wechatTip.style.display = 'none';
-          }, 3000);
-        }).catch(err => {
-          alert('复制失败，请手动复制：' + copyUrl);
-        });
+    function generateWechatQRCode(url) {
+      const qrcodeContainer = document.getElementById('wechat-qrcode');
+      qrcodeContainer.innerHTML = ''; // 清空原有二维码
+      new QRCode(qrcodeContainer, {
+        text: decodeURIComponent(url),
+        width: 200,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
       });
     }
   </script>
