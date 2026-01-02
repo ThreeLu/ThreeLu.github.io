@@ -108,12 +108,12 @@ comments:
     colorscheme          : # "light" (default), "dark"
 staticman:
   allowedFields          : ['name', 'email', 'url', 'message']
-  branch                 : "main" # 替换为你的仓库默认分支（比如 main 或 master）
+  branch                 : "master" # 替换为你的仓库默认分支（比如 main 或 master）
   commitMessage          : "新增评论：{{ options.slug }}"
   filename               : comment-{@timestamp}
   format                 : "yml"
   moderation             : true # 开启审核（避免垃圾评论）
-  path                   : "_data/comments/layout-comments" # 评论存储路径
+  path                   : "_data/comments/layout-comments/{options.slug}" # 评论存储路径
   requiredFields         : ['name', 'email', 'message']
   transforms:
     email                : "md5" # 加密邮箱保护隐私
