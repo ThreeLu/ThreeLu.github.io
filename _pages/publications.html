@@ -32,5 +32,7 @@ author_profile: true
   {% endfor %}
 {% endif %}
 
-
+{% if page.comments != false %}
+  {% include comments.html %}
+{% endif %}
 
