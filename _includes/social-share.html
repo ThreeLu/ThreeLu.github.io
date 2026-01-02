@@ -1,12 +1,18 @@
 {% include base_path %}
 
-<!-- ========== 修复关键点：将脚本移至按钮之前 ========== -->
+<!-- ========== 修复关键：将脚本移至 <head> 中，确保全局可用 ========== -->
 <script>
-  // ========== 微信分享核心函数（全局可访问） ==========
-  function openWechatModal(type) {
+  // 使用 window 显式定义函数，避免被其他脚本覆盖
+  window.openWechatModal = function(type) {
+    console.log('[DEBUG] openWechatModal called', type);
     const modal = document.getElementById('wechat-share-modal');
     const title = document.getElementById('wechat-modal-title');
     const tip = document.getElementById('wechat-modal-tip');
+    
+    if (!modal) {
+      console.error('WeChat modal not found!');
+      return;
+    }
     
     // 设置弹窗标题和提示
     if (type === 'friend') {
@@ -20,36 +26,46 @@
     // 显示弹窗
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-  }
+  };
 
-  function closeWechatModal() {
+  window.closeWechatModal = function() {
     const modal = document.getElementById('wechat-share-modal');
+    if (!modal) return;
     modal.style.display = 'none';
     document.body.style.overflow = '';
-  }
+  };
 
-  // ========== QQ分享核心函数 ==========
-  function openQQModal() {
+  window.openQQModal = function() {
+    console.log('[DEBUG] openQQModal called');
     const modal = document.getElementById('qq-share-modal');
+    if (!modal) {
+      console.error('QQ modal not found!');
+      return;
+    }
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-  }
+  };
 
-  function closeQQModal() {
+  window.closeQQModal = function() {
     const modal = document.getElementById('qq-share-modal');
+    if (!modal) return;
     modal.style.display = 'none';
     document.body.style.overflow = '';
-  }
+  };
 
-  // 复制链接：现代浏览器兼容方案
-  function copyQQLink() {
+  window.copyQQLink = function() {
     const input = document.getElementById('qq-share-link');
+    if (!input) {
+      console.error('QQ share link input not found!');
+      return;
+    }
     const link = input.value;
     
     if (navigator.clipboard) {
       navigator.clipboard.writeText(link).then(() => {
         alert('链接复制成功！可直接粘贴到QQ分享');
-      }).catch(() => {
+      }).catch((err) => {
+        console.error('Clipboard write failed:', err);
         // 降级方案
         input.select();
         document.execCommand('copy');
@@ -61,7 +77,7 @@
       document.execCommand('copy');
       alert('链接复制成功！可直接粘贴到QQ分享');
     }
-  }
+  };
 
   // ========== 安全绑定事件（确保DOM加载完成） ==========
   document.addEventListener('DOMContentLoaded', function() {
@@ -95,52 +111,51 @@
   <!-- 分享标题 -->
   <h4 class="page__share-title" style="margin-bottom: 1rem; font-size: 1rem; color: #333; text-align: left;">分享本文</h4>
 
-  <!-- 1. 微信好友：直接绑定onclick -->
+  <!-- 1. 微信好友 -->
   <a href="javascript:void(0);" class="btn btn--wechat-friend" title="分享到微信好友" 
-     onclick="openWechatModal('friend')"
+     onclick="window.openWechatModal('friend')"
      style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; margin: 0.3rem; border: 1px solid #ddd; border-radius: 4px; color: #fff; text-decoration: none; background: #07c160; cursor: pointer;">
     <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信好友</span>
   </a>
 
-  <!-- 2. 微信朋友圈：直接绑定onclick -->
+  <!-- 2. 微信朋友圈 -->
   <a href="javascript:void(0);" class="btn btn--wechat-moments" title="分享到微信朋友圈"
-     onclick="openWechatModal('moments')"
+     onclick="window.openWechatModal('moments')"
      style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; margin: 0.3rem; border: 1px solid #ddd; border-radius: 4px; color: #fff; text-decoration: none; background: #07c160; cursor: pointer;">
     <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信朋友圈</span>
   </a>
 
-  <!-- 3. QQ分享：直接绑定onclick -->
+  <!-- 3. QQ分享 -->
   <a href="javascript:void(0);" class="btn btn--qq" title="分享到QQ"
-     onclick="openQQModal()"
+     onclick="window.openQQModal()"
      style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; margin: 0.3rem; border: 1px solid #ddd; border-radius: 4px; color: #fff; text-decoration: none; background: #12b7f5; cursor: pointer;">
     <i class="fab fa-qq" aria-hidden="true"></i><span> QQ分享</span>
   </a>
 
-  <!-- 微信分享弹窗（默认隐藏） -->
+  <!-- 微信分享弹窗 -->
   <div id="wechat-share-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0,0,0,0.5);">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 2rem; border-radius: 8px; max-width: 300px; text-align: center;">
       <h5 id="wechat-modal-title" style="margin: 0 0 1rem; font-size: 1rem; color: #333;">分享到微信好友</h5>
       <p id="wechat-modal-tip" style="margin: 0 0 1rem; font-size: 0.85rem; color: #666;">扫码后：<br>1. 点击右上角「...」<br>2. 选择「转发给朋友」</p>
       <img id="wechat-qrcode-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ base_path | append: page.url | url_encode }}" alt="微信分享二维码" style="width: 200px; height: 200px; margin: 0 auto;">
-      <button onclick="closeWechatModal()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #07c160; color: #fff; cursor: pointer;">关闭</button>
+      <button onclick="window.closeWechatModal()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #07c160; color: #fff; cursor: pointer;">关闭</button>
     </div>
   </div>
 
-  <!-- QQ分享弹窗（默认隐藏） -->
+  <!-- QQ分享弹窗 -->
   <div id="qq-share-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0,0,0,0.5);">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 2rem; border-radius: 8px; max-width: 300px; text-align: center;">
       <h5 style="margin: 0 0 1rem; font-size: 1rem; color: #333;">分享到QQ</h5>
       <p style="margin: 0 0 1rem; font-size: 0.85rem; color: #666;">方式1：扫码分享 | 方式2：复制链接到QQ</p>
       <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ base_path | append: page.url | url_encode }}" alt="QQ分享二维码" style="width: 200px; height: 200px; margin: 0 auto;">
-      <!-- 链接复制框 -->
       <div style="margin-top: 1rem;">
         <input type="text" id="qq-share-link" value="{{ base_path | append: page.url }}" readonly style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem; color: #333;">
-        <button onclick="copyQQLink()" style="margin-top: 0.5rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #12b7f5; color: #fff; cursor: pointer;">复制链接</button>
+        <button onclick="window.copyQQLink()" style="margin-top: 0.5rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #12b7f5; color: #fff; cursor: pointer;">复制链接</button>
       </div>
-      <button onclick="closeQQModal()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #12b7f5; color: #fff; cursor: pointer;">关闭</button>
+      <button onclick="window.closeQQModal()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; border: none; border-radius: 4px; background: #12b7f5; color: #fff; cursor: pointer;">关闭</button>
     </div>
   </div>
 </section>
 
-<!-- 优先加载图标（放在最后，不影响功能） -->
+<!-- Font Awesome 链接（放在 <head> 会更好，但这里不影响功能） -->
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" type="text/css">
