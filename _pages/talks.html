@@ -15,3 +15,7 @@ author_profile: true
   {% include archive-single-talk.html %}
 {% endfor %}
 
+{% if page.comments != false %}
+  {% include comments.html %}
+{% endif %}
+
