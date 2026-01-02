@@ -1,71 +1,51 @@
 {% include base_path %}
 
-<!-- 整体容器：大幅精简边距，去掉冗余边框，减少重排触发 -->
-<div class="page__footer" style="padding: 1.5rem 0; margin-top: 2rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <!-- 第一部分：社交/学术链接（精简间距，优化flex布局） -->
-  {% if site.author.github or site.author.bitbucket or site.author.orcid or site.author.researchgate or site.atom_feed.hide != true %}
-  <div class="page__footer-follow" style="margin-bottom: 0.8rem; text-align: center;">
-    <ul class="social-icons" style="list-style: none; padding: 0; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; font-size: 0.85rem; max-width: 80%;">
-      {% if site.data.ui-text[site.locale].follow_label %}
-        <li style="margin-right: 0.5rem; font-weight: 600; color: #333; white-space: nowrap;">{{ site.data.ui-text[site.locale].follow_label | default: "关注我" }}</li>
-      {% endif %}
-      <!-- 学术常用平台：ORCID/ResearchGate -->
-      {% if site.author.orcid %}
-        <li style="white-space: nowrap;"><a href="https://orcid.org/{{ site.author.orcid }}" style="color: #555; text-decoration: none; display: inline-flex; align-items: center; gap: 0.2rem;">
-          <i class="fab fa-orcid" aria-hidden="true"></i> ORCID
-        </a></li>
-      {% endif %}
-      {% if site.author.researchgate %}
-        <li style="white-space: nowrap;"><a href="https://www.researchgate.net/profile/{{ site.author.researchgate }}" style="color: #555; text-decoration: none; display: inline-flex; align-items: center; gap: 0.2rem;">
-          <i class="fab fa-researchgate" aria-hidden="true"></i> ResearchGate
-        </a></li>
-      {% endif %}
-      <!-- 原有平台：GitHub/Bitbucket -->
-      {% if site.author.github %}
-        <li style="white-space: nowrap;"><a href="https://github.com/{{ site.author.github }}" style="color: #555; text-decoration: none; display: inline-flex; align-items: center; gap: 0.2rem;">
-          <i class="fab fa-github" aria-hidden="true"></i> GitHub
-        </a></li>
-      {% endif %}
-      {% if site.author.bitbucket %}
-        <li style="white-space: nowrap;"><a href="https://bitbucket.org/{{ site.author.bitbucket }}" style="color: #555; text-decoration: none; display: inline-flex; align-items: center; gap: 0.2rem;">
-          <i class="fab fa-bitbucket" aria-hidden="true"></i> Bitbucket
-        </a></li>
-      {% endif %}
-      <!-- RSS订阅 -->
-      {% if site.atom_feed.hide != true %}
-        <li style="white-space: nowrap;"><a href="{% if site.atom_feed.path %}{{ site.atom_feed.path }}{% else %}{{ base_path }}/feed.xml{% endif %}" style="color: #555; text-decoration: none; display: inline-flex; align-items: center; gap: 0.2rem;">
-          <i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].feed_label | default: "订阅" }}
-        </a></li>
-      {% endif %}
-    </ul>
+<!-- 整体容器：极致压缩边距，强制窄宽度，居中对齐 -->
+<div class="page__footer" style="padding: 0.8rem 0; margin-top: 1rem; font-family: sans-serif; max-width: 100%; text-align: center;">
+  <!-- 第一部分：社交链接（极简inline布局，无多余间距） -->
+  {% if site.author.github or site.author.orcid or site.author.researchgate %}
+  <div style="font-size: 0.7rem; color: #555; margin-bottom: 0.3rem; line-height: 1.2;">
+    {% if site.data.ui-text[site.locale].follow_label %}
+      <span style="font-weight: 500; margin-right: 0.3rem;">{{ site.data.ui-text[site.locale].follow_label | default: "关注" }}</span>
+    {% endif %}
+    {% if site.author.orcid %}
+      <a href="https://orcid.org/{{ site.author.orcid }}" style="color: #555; text-decoration: none; margin: 0 0.2rem;">
+        <i class="fab fa-orcid" aria-hidden="true"></i> ORCID
+      </a>
+    {% endif %}
+    {% if site.author.researchgate %}
+      <a href="https://www.researchgate.net/profile/{{ site.author.researchgate }}" style="color: #555; text-decoration: none; margin: 0 0.2rem;">
+        <i class="fab fa-researchgate" aria-hidden="true"></i> RG
+      </a>
+    {% endif %}
+    {% if site.author.github %}
+      <a href="https://github.com/{{ site.author.github }}" style="color: #555; text-decoration: none; margin: 0 0.2rem;">
+        <i class="fab fa-github" aria-hidden="true"></i> GitHub
+      </a>
+    {% endif %}
   </div>
   {% endif %}
 
-  <!-- 第二部分：版权与技术声明（压缩行高/字体，精简间距） -->
-  <div class="page__footer-copyright" style="text-align: center; font-size: 0.75rem; color: #666; line-height: 1.4; margin-bottom: 0.5rem;">
-    &copy; {{ site.time | date: '%Y' }} {{ site.name | default: site.title }}. All rights reserved.<br>
-    {{ site.data.ui-text[site.locale].powered_by | default: "技术支持" }} 
-    <a href="https://jekyllrb.com" rel="nofollow" style="color: #4285f4; text-decoration: none;">Jekyll</a> &amp; 
-    <a href="https://github.com/academicpages/academicpages.github.io" style="color: #4285f4; text-decoration: none;">AcademicPages</a>
-    (fork of <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow" style="color: #4285f4; text-decoration: none;">Minimal Mistakes</a>).<br>
-    站点最后更新：{{ "now" | date: '%Y-%m-%d %H:%M' }}
-  </div>
-
-  <!-- 可选：第三部分（学术主页专属，压缩间距） -->
-  {% if site.author.email or site.author.url %}
-  <div style="text-align: center; font-size: 0.7rem; color: #777; margin-top: 0.5rem; line-height: 1.3;">
-    {% if site.author.email %}
-      <span>联系邮箱：<a href="mailto:{{ site.author.email }}" style="color: #4285f4; text-decoration: none;">{{ site.author.email }}</a></span>
+  <!-- 第二部分：版权+联系（合并成一行，极致压缩） -->
+  <div style="font-size: 0.65rem; color: #666; line-height: 1.2;">
+    <!-- 版权声明（合并换行，缩短文本） -->
+    <span>&copy; {{ site.time | date: '%Y' }} {{ site.name | default: site.title }}. {{ site.data.ui-text[site.locale].powered_by | default: "基于" }} 
+      <a href="https://jekyllrb.com" rel="nofollow" style="color: #4285f4; text-decoration: none;">Jekyll</a>
+      更新：{{ "now" | date: '%Y-%m-%d' }}
+    </span>
+    <!-- 联系信息（极简展示） -->
+    {% if site.author.email or site.author.url %}
+    <span style="margin-left: 0.5rem;">|</span>
     {% endif %}
-    {% if site.author.url and site.author.email %}
-      <span style="margin: 0 0.5rem;">|</span>
+    {% if site.author.email %}
+      <a href="mailto:{{ site.author.email }}" style="color: #4285f4; text-decoration: none;">{{ site.author.email | split:'@' | first }}@...</a>
     {% endif %}
     {% if site.author.url %}
-      <span>个人主页：<a href="{{ site.author.url }}" style="color: #4285f4; text-decoration: none;">{{ site.author.url | replace: 'https://', '' | replace: 'http://', '' | truncate: 25 }}</a></span>
+      {% if site.author.email %}<span style="margin: 0 0.2rem;">|</span>{% endif %}
+      <a href="{{ site.author.url }}" style="color: #4285f4; text-decoration: none;">{{ site.author.url | split:'//' | last | truncate: 15 }}</a>
     {% endif %}
   </div>
-  {% endif %}
 </div>
 
-<!-- 按需引入图标（避免全局加载导致的渲染卡顿） -->
-<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+<!-- 极简图标引入（仅加载需要的图标，减少体积） -->
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" style="display: none;" onload="this.style.display='block'">
