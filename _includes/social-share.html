@@ -26,30 +26,6 @@
     .btn--facebook { background-color: #1877f2; }
     .btn--x { background-color: #000000; }
     .btn--qq { background-color: #12B7F5; }
-    .btn--wechat { background-color: #07C160; }
-    /* 微信提示弹窗 */
-    #wechat-tip {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.8);
-      color: #fff;
-      padding: 20px 30px;
-      border-radius: 8px;
-      z-index: 9999;
-      text-align: center;
-    }
-    #wechat-tip button {
-      margin: 10px auto 0;
-      padding: 6px 12px;
-      cursor: pointer;
-      border: none;
-      border-radius: 4px;
-      background: #fff;
-      color: #333;
-    }
   </style>
 
   <!-- Facebook 分享 -->
@@ -58,64 +34,12 @@
   </a>
 
   <!-- X 分享 -->
-  <a href="https://x.com/intent/post?text={{ base_path | append: page.url | url_encode }}" class="btn btn--x" title="Share on X">
+  <a href="https://x.com/intent/post?text={{ page.title | url_encode }}%20{{ base_path | append: page.url | url_encode }}" class="btn btn--x" title="Share on X">
     <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X</span>
   </a>
 
   <!-- QQ 分享 -->
-  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | url_encode }}" class="btn btn--qq" title="分享到QQ">
+  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | replace: '//', '/' | url_encode }}&title={{ page.title | url_encode }}" class="btn btn--qq" title="分享到QQ">
     <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
   </a>
-
-  <!-- 微信分享按钮（移除内联onclick） -->
-  <a href="javascript:void(0);" class="btn btn--wechat" id="wechat-share-btn" title="分享到微信">
-    <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信</span>
-  </a>
-
-  <!-- 微信提示弹窗 -->
-  <div id="wechat-tip">
-    链接已复制！粘贴到微信分享即可
-    <button onclick="document.getElementById('wechat-tip').style.display='none'">关闭</button>
-  </div>
-
-  <!-- 脚本移到最后，确保DOM加载完成后执行 -->
-  <script>
-    // 定义全局函数（确保可访问）
-    window.copyWechatLink = function() {
-      // 拼接完整URL（Liquid渲染后转成纯字符串）
-      const shareUrl = "{{ base_path }}{{ page.url }}";
-      // 兼容剪贴板API
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          document.getElementById('wechat-tip').style.display = 'block';
-          // 3秒自动关闭
-          setTimeout(() => {
-            document.getElementById('wechat-tip').style.display = 'none';
-          }, 3000);
-        }).catch(err => {
-          alert('复制失败，请手动复制链接：\n' + shareUrl);
-        });
-      } else {
-        // 兼容旧浏览器
-        const textArea = document.createElement('textarea');
-        textArea.value = shareUrl;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        document.getElementById('wechat-tip').style.display = 'block';
-        setTimeout(() => {
-          document.getElementById('wechat-tip').style.display = 'none';
-        }, 3000);
-      }
-    };
-
-    // DOM加载完成后绑定事件（核心修复）
-    document.addEventListener('DOMContentLoaded', function() {
-      const wechatBtn = document.getElementById('wechat-share-btn');
-      if (wechatBtn) {
-        wechatBtn.addEventListener('click', window.copyWechatLink);
-      }
-    });
-  </script>
 </section>
