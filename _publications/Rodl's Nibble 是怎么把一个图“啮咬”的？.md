@@ -1,4 +1,13 @@
-# How did Rodl nibble the graph？
+---
+title: "How did Rodl nibble the graph？"
+collection: publication
+category: manuscripts
+permalink: /publication/2026-01-01-How-did-Rodl-nibble-the-graph？
+excerpt: '这篇短文主要是梳理概率方法的工具。'
+date: 2026-01-01
+venue: '讨论班讲义资料'
+citation: 'Noga Alon's Book.'
+---
 
 ## Pippenger's Theorem
 
@@ -96,6 +105,7 @@ $$
 |E_i| = \frac{\varepsilon|V_{i - 1}|}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).
 $$
 ​	The detailed proof can be found in Section 4.7 of Noga Alon's book.
+
 
 
 
