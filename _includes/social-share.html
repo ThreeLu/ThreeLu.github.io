@@ -1,114 +1,98 @@
 {% include base_path %}
 
-<!-- ========== 修复关键：将脚本移至 <head> 中，确保全局可用 ========== -->
+<!-- ========== 修复关键：使用 IIFE 确保函数定义安全 ========== -->
 <script>
-  // 使用 window 显式定义函数，避免被其他脚本覆盖
-  window.openWechatModal = function(type) {
-    console.log('[DEBUG] openWechatModal called', type);
-    const modal = document.getElementById('wechat-share-modal');
-    const title = document.getElementById('wechat-modal-title');
-    const tip = document.getElementById('wechat-modal-tip');
-    
-    if (!modal) {
-      console.error('WeChat modal not found!');
-      return;
+  (function() {
+    // 检查函数是否已定义，避免覆盖
+    if (typeof window.openWechatModal !== 'function') {
+      window.openWechatModal = function(type) {
+        console.log('[FIX] openWechatModal called', type);
+        const modal = document.getElementById('wechat-share-modal');
+        const title = document.getElementById('wechat-modal-title');
+        const tip = document.getElementById('wechat-modal-tip');
+        
+        if (!modal) {
+          console.error('[FIX] WeChat modal not found!');
+          return;
+        }
+        
+        if (type === 'friend') {
+          title.innerText = '分享到微信好友';
+          tip.innerText = '扫码后：\n1. 点击右上角「...」\n2. 选择「转发给朋友」';
+        } else if (type === 'moments') {
+          title.innerText = '分享到微信朋友圈';
+          tip.innerText = '扫码后：\n1. 点击右上角「...」\n2. 选择「分享到朋友圈」';
+        }
+        
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      };
     }
-    
-    // 设置弹窗标题和提示
-    if (type === 'friend') {
-      title.innerText = '分享到微信好友';
-      tip.innerText = '扫码后：\n1. 点击右上角「...」\n2. 选择「转发给朋友」';
-    } else if (type === 'moments') {
-      title.innerText = '分享到微信朋友圈';
-      tip.innerText = '扫码后：\n1. 点击右上角「...」\n2. 选择「分享到朋友圈」';
-    }
-    
-    // 显示弹窗
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-  };
 
-  window.closeWechatModal = function() {
-    const modal = document.getElementById('wechat-share-modal');
-    if (!modal) return;
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  };
+    if (typeof window.closeWechatModal !== 'function') {
+      window.closeWechatModal = function() {
+        const modal = document.getElementById('wechat-share-modal');
+        if (!modal) return;
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      };
+    }
 
-  window.openQQModal = function() {
-    console.log('[DEBUG] openQQModal called');
-    const modal = document.getElementById('qq-share-modal');
-    if (!modal) {
-      console.error('QQ modal not found!');
-      return;
+    if (typeof window.openQQModal !== 'function') {
+      window.openQQModal = function() {
+        console.log('[FIX] openQQModal called');
+        const modal = document.getElementById('qq-share-modal');
+        if (!modal) {
+          console.error('[FIX] QQ modal not found!');
+          return;
+        }
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      };
     }
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-  };
 
-  window.closeQQModal = function() {
-    const modal = document.getElementById('qq-share-modal');
-    if (!modal) return;
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  };
+    if (typeof window.closeQQModal !== 'function') {
+      window.closeQQModal = function() {
+        const modal = document.getElementById('qq-share-modal');
+        if (!modal) return;
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      };
+    }
 
-  window.copyQQLink = function() {
-    const input = document.getElementById('qq-share-link');
-    if (!input) {
-      console.error('QQ share link input not found!');
-      return;
+    if (typeof window.copyQQLink !== 'function') {
+      window.copyQQLink = function() {
+        const input = document.getElementById('qq-share-link');
+        if (!input) {
+          console.error('[FIX] QQ share link input not found!');
+          return;
+        }
+        const link = input.value;
+        
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(link).then(() => {
+            alert('链接复制成功！可直接粘贴到QQ分享');
+          }).catch((err) => {
+            console.error('[FIX] Clipboard write failed:', err);
+            input.select();
+            document.execCommand('copy');
+            alert('链接复制成功！可直接粘贴到QQ分享');
+          });
+        } else {
+          input.select();
+          document.execCommand('copy');
+          alert('链接复制成功！可直接粘贴到QQ分享');
+        }
+      };
     }
-    const link = input.value;
-    
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(link).then(() => {
-        alert('链接复制成功！可直接粘贴到QQ分享');
-      }).catch((err) => {
-        console.error('Clipboard write failed:', err);
-        // 降级方案
-        input.select();
-        document.execCommand('copy');
-        alert('链接复制成功！可直接粘贴到QQ分享');
-      });
-    } else {
-      // 终极降级
-      input.select();
-      document.execCommand('copy');
-      alert('链接复制成功！可直接粘贴到QQ分享');
-    }
-  };
 
-  // ========== 安全绑定事件（确保DOM加载完成） ==========
-  document.addEventListener('DOMContentLoaded', function() {
-    // 点击弹窗外部关闭
-    const wechatModal = document.getElementById('wechat-share-modal');
-    const qqModal = document.getElementById('qq-share-modal');
-    
-    if (wechatModal) {
-      wechatModal.addEventListener('click', function(e) {
-        if (e.target === this) closeWechatModal();
-      });
-    }
-    
-    if (qqModal) {
-      qqModal.addEventListener('click', function(e) {
-        if (e.target === this) closeQQModal();
-      });
-    }
-    
-    // ESC键关闭
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeWechatModal();
-        closeQQModal();
-      }
-    });
-  });
+    // 确认函数已正确定义
+    console.log('[FIX] openWechatModal:', typeof window.openWechatModal);
+    console.log('[FIX] openQQModal:', typeof window.openQQModal);
+  })();
 </script>
 
 <section class="page__share" style="margin: 2rem 0; padding: 1rem; border-top: 1px solid #eee; border-bottom: 1px solid #eee;">
-  <!-- 分享标题 -->
   <h4 class="page__share-title" style="margin-bottom: 1rem; font-size: 1rem; color: #333; text-align: left;">分享本文</h4>
 
   <!-- 1. 微信好友 -->
@@ -157,5 +141,5 @@
   </div>
 </section>
 
-<!-- Font Awesome 链接（放在 <head> 会更好，但这里不影响功能） -->
+<!-- Font Awesome 链接 -->
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" type="text/css">
