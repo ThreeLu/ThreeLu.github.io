@@ -108,7 +108,7 @@ comments:
     colorscheme          : # "light" (default), "dark"
 staticman:
   allowedFields          : ['name', 'email', 'url', 'message']
-  branch                 : "master" # 替换为你的仓库默认分支（比如 main 或 master）
+  branch                 : "gh-pages" # 替换为你的仓库默认分支（比如 main 或 master）
   commitMessage          : "新增评论：{{ options.slug }}"
   filename               : comment-{@timestamp}
   format                 : "yml"
