@@ -1,11 +1,15 @@
 <article id="comment{{ include.index }}" class="js-comment comment">
   <div class="comment__avatar-wrapper">
-    <img class="comment__avatar" src="https://www.gravatar.com/avatar/{{ include.email }}?d=mm&s=80">
+    <img 
+      class="comment__avatar" 
+      src="https://www.gravatar.com/avatar/{{ include.email }}?d=mm&s=80" 
+      alt="{{ include.name }} 的头像"
+    >
   </div>
   <div class="comment__content-wrapper">
     <h3 class="comment__author">
       {% unless include.url == blank %}
-        <a rel="nofollow" href="{{ include.url }}">{{ include.name }}</a>
+        <a rel="nofollow" target="_blank" href="{{ include.url }}">{{ include.name }}</a>
       {% else %}
         {{ include.name }}
       {% endunless %}
@@ -13,10 +17,28 @@
     <p class="comment__date">
       {% if include.date %}
         {% if include.index %}<a href="#comment{{ include.index }}">{% endif %}
-        <time datetime="{{ include.date | date_to_xmlschema }}">{{ include.date | date: "%B %d, %Y at %I:%M %p" }}</time>
+        <time datetime="{{ include.date | date_to_xmlschema }}">
+          {{ include.date | date: "%Y年%m月%d日 %H:%M" }}
+        </time>
         {% if include.index %}</a>{% endif %}
       {% endif %}
     </p>
-    {{ include.message | markdownify }}
+    <div class="comment__message">
+      {{ include.message | markdownify | replace: '<p>', '<p class="comment__text">' }}
+    </div>
   </div>
 </article>
+
+<style>
+  .comment {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  .comment__avatar { border-radius: 50%; width: 80px; height: 80px; }
+  .comment__author { margin: 0 0 0.5rem 0; font-size: 1.1rem; font-weight: 600; }
+  .comment__date { color: #666; font-size: 0.9rem; margin: 0 0 0.8rem 0; }
+  .comment__text { line-height: 1.6; margin: 0; color: #333; }
+</style>
