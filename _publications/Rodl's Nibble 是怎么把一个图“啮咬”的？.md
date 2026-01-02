@@ -8,8 +8,7 @@ date: 2026-01-01
 venue: '讨论班讲义资料'
 citation: 'Noga Alon's Book.'
 ---
-
-## Pippenger's Theorem
+# Pippenger's Theorem
 
 > **Theorem 1**    For every integer $r \ge 2$ and $n \ge 2$, $D^{-1} \ll \gamma \ll \varepsilon, k^{-1} \le 1$, every $r$-uniform hypergraph $H = (V,E)$ with $|V| = n$ and $d(v) > 0$ for every $v \in V$, which satisfies the following conditions: 
 >
@@ -105,6 +104,7 @@ $$
 |E_i| = \frac{\varepsilon|V_{i - 1}|}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).
 $$
 ​	The detailed proof can be found in Section 4.7 of Noga Alon's book.
+
 
 
 
