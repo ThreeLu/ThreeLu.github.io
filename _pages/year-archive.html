@@ -17,3 +17,7 @@ redirect_from:
   {% endif %}
   {% include archive-single.html %}
 {% endfor %}
+
+{% if page.comments != false %}
+  {% include comments.html %}
+{% endif %}
