@@ -51,7 +51,7 @@ We use the following lemma to establish the nibble process.
 - Q1) Why is it possible to complete the proof by just one nibble? How can we choose $t$?  
 - Q2) The order of the parameter between different results using Lemma 1. 
 
-![fig the-nibble-lemma](Rodl%27s%20Nibble%20%E6%98%AF%E6%80%8E%E4%B9%88%E6%8A%8A%E4%B8%80%E4%B8%AA%E5%9B%BE%E2%80%9C%E5%95%AE%E5%92%AC%E2%80%9D%E7%9A%84%EF%BC%9F/fig%20the-nibble-lemma.png)
+![fig the-nibble-lemma](_publications/fig the-nibble-lemma.png)
 
 ​			**Figure 1**: Proof of Theorem 1 
 
@@ -105,6 +105,7 @@ $$
 |E_i| = \frac{\varepsilon|V_{i - 1}|}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).
 $$
 ​	The detailed proof can be found in Section 4.7 of Noga Alon's book.
+
 
 
 
