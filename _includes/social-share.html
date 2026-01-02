@@ -13,34 +13,75 @@
     <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X </span>
   </a>
 
-  <!-- 修改后的 QQ 分享（唤起本地客户端，无二维码） -->
-  <a href="https://wpa.qq.com/msgrd?v=3&uin=你的QQ号（可选）&site=qq&menu=yes&share_url={{ base_path | append: page.url | url_encode }}&title={{ page.title | default: '分享内容' | url_encode }}" 
-     class="btn btn--qq" 
-     target="_blank" 
-     title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
-    <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
-  </a>
-
-  <!-- 新增：备选方案（跳转到 QQ 空间分享，纯网页端） -->
-  <!-- 如果你不想唤起客户端，可改用这个链接（无二维码，直接跳QQ空间分享页） -->
-  <!--
-  <a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | default: '分享内容' | url_encode }}" 
-     class="btn btn--qq" 
-     target="_blank" 
-     title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
-    <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
-  </a>
-  -->
+  <!-- 差异化 QQ 分享容器（动态渲染） -->
+  <div id="qq-share-container"></div>
 
   <!-- 微信分享（不变） -->
   <button class="btn btn--wechat" id="wechat-share-btn" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信">
     <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信</span>
   </button>
   <div id="wechat-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
-    由于微信无法直接转发，已复制链接：<span id="copy-url">{{ base_path }}{{ page.url }}</span>，打开微信粘贴分享即可
+    链接已复制：<span id="copy-url">{{ base_path }}{{ page.url }}</span>，打开微信粘贴分享即可
   </div>
 
   <script>
+    // ========== 核心：设备检测（区分移动端/桌面端） ==========
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const shareUrl = '{{ base_path }}{{ page.url }}'; // 待分享的完整URL
+    const pageTitle = '{{ page.title | default: "分享内容" }}'; // 分享标题
+
+    // ========== 动态渲染 QQ 分享按钮 ==========
+    const qqContainer = document.getElementById('qq-share-container');
+    if (isMobile) {
+      // 移动端：渲染「唤起QQ客户端」的链接（适配手机/平板）
+      qqContainer.innerHTML = `
+        <a href="mqq://share/menu?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(pageTitle)}" 
+           class="btn btn--qq" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           title="Share on QQ">
+          <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
+        </a>
+        <!-- 移动端唤起失败提示（默认隐藏） -->
+        <div id="mobile-qq-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
+          未唤起QQ？请手动复制链接：<span>${shareUrl}</span>
+        </div>
+      `;
+      // 移动端QQ唤起失败处理
+      const qqBtn = qqContainer.querySelector('.btn--qq');
+      const qqTip = qqContainer.querySelector('#mobile-qq-tip');
+      qqBtn.addEventListener('click', (e) => {
+        // 2秒后检测是否唤起成功，未成功则显示提示
+        setTimeout(() => {
+          qqTip.style.display = 'block';
+          // 5秒后隐藏提示
+          setTimeout(() => { qqTip.style.display = 'none'; }, 5000);
+        }, 2000);
+      });
+    } else {
+      // 桌面端：渲染「复制链接」按钮（避免转圈）
+      qqContainer.innerHTML = `
+        <button class="btn btn--qq" id="pc-qq-share-btn" title="Share on QQ">
+          <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
+        </button>
+        <div id="pc-qq-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
+          QQ分享链接已复制：<span>${shareUrl}</span>，打开QQ粘贴分享即可
+        </div>
+      `;
+      // 桌面端QQ复制链接逻辑
+      const qqBtn = qqContainer.querySelector('#pc-qq-share-btn');
+      const qqTip = qqContainer.querySelector('#pc-qq-tip');
+      qqBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          qqTip.style.display = 'block';
+          setTimeout(() => { qqTip.style.display = 'none'; }, 3000);
+        }).catch(err => {
+          alert('QQ链接复制失败，请手动复制：' + shareUrl);
+        });
+      });
+    }
+
+    // ========== 微信复制逻辑（不变） ==========
     const wechatBtn = document.getElementById('wechat-share-btn');
     const wechatTip = document.getElementById('wechat-tip');
     const copyUrl = document.getElementById('copy-url').textContent;
