@@ -175,3 +175,7 @@ This allows you to denote <var>variables</var>.
 {% for post in site.pages %}
 {% include archive-single.html %}
 {% endfor %}
+
+{% if page.comments != false %}
+  {% include comments.html %}
+{% endif %}
