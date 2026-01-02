@@ -10,33 +10,44 @@
     <i class="fab fa-facebook" aria-hidden="true"></i><span> Facebook</span>
   </a>
   <a href="https://x.com/intent/post?text={{ base_path }}{{ page.url | url_encode }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X">
-    <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X (formerly Twitter)</span>
+    <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X </span>
   </a>
-  <!-- 新增 QQ 分享 -->
-  <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | default: '分享内容' | url_encode }}" class="btn btn--qq" target="_blank" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
+
+  <!-- 修改后的 QQ 分享（唤起本地客户端，无二维码） -->
+  <a href="https://wpa.qq.com/msgrd?v=3&uin=你的QQ号（可选）&site=qq&menu=yes&share_url={{ base_path | append: page.url | url_encode }}&title={{ page.title | default: '分享内容' | url_encode }}" 
+     class="btn btn--qq" 
+     target="_blank" 
+     title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
     <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
   </a>
 
-  <!-- 新增 微信分享（复制链接 + 提示） -->
+  <!-- 新增：备选方案（跳转到 QQ 空间分享，纯网页端） -->
+  <!-- 如果你不想唤起客户端，可改用这个链接（无二维码，直接跳QQ空间分享页） -->
+  <!--
+  <a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | default: '分享内容' | url_encode }}" 
+     class="btn btn--qq" 
+     target="_blank" 
+     title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
+    <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
+  </a>
+  -->
+
+  <!-- 微信分享（不变） -->
   <button class="btn btn--wechat" id="wechat-share-btn" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信">
     <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信</span>
   </button>
-  <!-- 微信分享提示（默认隐藏） -->
   <div id="wechat-tip" style="display: none; margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px;">
     链接已复制：<span id="copy-url">{{ base_path }}{{ page.url }}</span>，打开微信粘贴分享即可
   </div>
 
-  <!-- 复制链接 JS -->
   <script>
     const wechatBtn = document.getElementById('wechat-share-btn');
     const wechatTip = document.getElementById('wechat-tip');
     const copyUrl = document.getElementById('copy-url').textContent;
 
     wechatBtn.addEventListener('click', () => {
-      // 复制链接到剪贴板
       navigator.clipboard.writeText(copyUrl).then(() => {
         wechatTip.style.display = 'block';
-        // 3秒后隐藏提示
         setTimeout(() => {
           wechatTip.style.display = 'none';
         }, 3000);
