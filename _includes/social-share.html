@@ -5,63 +5,106 @@
     <h4 class="page__share-title">{{ site.data.ui-text[site.locale].share_on_label | default: "Share on" }}</h4>
   {% endif %}
 
-  <!-- 保留 Facebook -->
+  <!-- 样式直接嵌入，无需单独CSS文件 -->
+  <style>
+    /* 分享按钮通用样式 */
+    .page__share .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      margin: 0 4px 8px 0;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+      transition: opacity 0.2s;
+    }
+    .page__share .btn:hover {
+      opacity: 0.9;
+      text-decoration: none;
+    }
+    /* 各平台按钮样式 */
+    .btn--facebook { background-color: #1877f2; }
+    .btn--x { background-color: #000000; }
+    .btn--qq { background-color: #12B7F5; }
+    .btn--wechat { background-color: #07C160; }
+    /* 微信二维码弹窗样式 */
+    #wechat-qrcode-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      z-index: 9999;
+    }
+    #wechat-qrcode-modal p {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    #wechat-qrcode {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+    }
+    #wechat-qrcode-modal button {
+      display: block;
+      margin: 10px auto;
+      padding: 8px 16px;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #f5f5f5;
+    }
+    #wechat-qrcode-modal button:hover {
+      background: #eee;
+    }
+  </style>
+
+  <!-- Facebook 分享 -->
   <a href="https://www.facebook.com/sharer/sharer.php?u={{ base_path | append: page.url | url_encode }}" class="btn btn--facebook" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Facebook">
     <i class="fab fa-facebook" aria-hidden="true"></i><span> Facebook</span>
   </a>
 
-  <!-- 保留 X (原Twitter) -->
+  <!-- X (原Twitter) 分享 -->
   <a href="https://x.com/intent/post?text={{ base_path | append: page.url | url_encode }}" class="btn btn--x" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} X">
     <i class="fab fa-x-twitter" aria-hidden="true"></i><span> X</span>
   </a>
 
-  <!-- 新增 QQ 分享 -->
+  <!-- QQ 分享 -->
   <a href="https://connect.qq.com/widget/shareqq/index.html?url={{ base_path | append: page.url | url_encode }}&title={{ page.title | url_encode }}" class="btn btn--qq" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} QQ">
     <i class="fab fa-qq" aria-hidden="true"></i><span> QQ</span>
   </a>
 
-  <!-- 新增 微信 分享 (注：微信网页分享需扫码，此处做常用实现) -->
-  <a href="javascript:void(0);" class="btn btn--wechat" id="wechat-share" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信">
+  <!-- 微信分享（简化版：提示复制链接，避免二维码脚本依赖） -->
+  <a href="javascript:void(0);" class="btn btn--wechat" onclick="copyWechatLink()" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} 微信">
     <i class="fab fa-weixin" aria-hidden="true"></i><span> 微信</span>
   </a>
 
-  <!-- 微信分享二维码弹窗 (可选，如需扫码功能添加) -->
-  <div id="wechat-qrcode-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 20px rgba(0,0,0,0.2);z-index:9999;">
-    <p style="text-align:center;margin-bottom:10px;">扫码分享到微信</p>
-    <div id="wechat-qrcode" style="width:200px;height:200px;margin:0 auto;"></div>
-    <button onclick="document.getElementById('wechat-qrcode-modal').style.display='none'" style="display:block;margin:10px auto;padding:8px 16px;cursor:pointer;">关闭</button>
+  <!-- 微信复制链接提示（替代二维码，无外部依赖） -->
+  <div id="wechat-tip" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);color:#fff;padding:20px;border-radius:8px;z-index:9999;">
+    链接已复制！粘贴到微信分享即可
+    <button onclick="document.getElementById('wechat-tip').style.display='none'" style="display:block;margin:10px auto;padding:8px 16px;cursor:pointer;">关闭</button>
   </div>
 
   <script>
-    // 微信分享二维码生成逻辑 (需引入 qrcode.js，可自行CDN引入)
-    document.getElementById('wechat-share').addEventListener('click', function() {
-      const shareUrl = '{{ base_path | append: page.url | url_encode }}';
-      const modal = document.getElementById('wechat-qrcode-modal');
-      
-      // 引入qrcode.js (如果未全局引入)
-      if (!window.QRCode) {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-        script.onload = function() {
-          generateWechatQRCode(shareUrl);
-        };
-        document.body.appendChild(script);
-      } else {
-        generateWechatQRCode(shareUrl);
-      }
-      
-      modal.style.display = 'block';
-    });
-
-    function generateWechatQRCode(url) {
-      const qrcodeContainer = document.getElementById('wechat-qrcode');
-      qrcodeContainer.innerHTML = ''; // 清空原有二维码
-      new QRCode(qrcodeContainer, {
-        text: decodeURIComponent(url),
-        width: 200,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H
+    // 微信分享：复制链接到剪贴板（无外部脚本依赖）
+    function copyWechatLink() {
+      const shareUrl = '{{ base_path | append: page.url }}';
+      // 复制到剪贴板
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        document.getElementById('wechat-tip').style.display = 'block';
+        // 3秒后自动关闭提示
+        setTimeout(() => {
+          document.getElementById('wechat-tip').style.display = 'none';
+        }, 3000);
+      }).catch(err => {
+        alert('复制失败，请手动复制链接：' + shareUrl);
       });
     }
   </script>
