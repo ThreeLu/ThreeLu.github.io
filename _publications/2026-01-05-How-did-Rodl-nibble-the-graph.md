@@ -49,7 +49,7 @@ The main questions we should consider are as follows:
 - Q2) The order of the parameter between different results using Lemma 1. 
 
 <!-- 图片插入：使用绝对路径，指向根目录的 images 文件夹 -->
-![fig the-nibble-lemma](/images/fig_the-nibble-lemma.png)
+![fig the-nibble-lemma](/images/fig the-nibble-lemma.png)
 
 **Figure 1**: Proof of Theorem 1 
 
@@ -111,3 +111,4 @@ The size of the edge set $E_i$ (nibbled in the $i$-th step) is bounded by:
 $$\lvert E_i \rvert = \frac{\varepsilon \lvert V_{i - 1} \rvert}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).$$
 
 The detailed proof can be found in Section 4.7 of Noga Alon's book.
+
