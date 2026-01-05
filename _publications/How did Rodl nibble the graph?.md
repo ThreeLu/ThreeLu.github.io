@@ -3,8 +3,8 @@ title: "How did Rodl nibble the graph?"
 collection: publication
 category: manuscripts
 permalink: /publication/2026-01-01-How-did-Rodl-nibble-the-graph?
-excerpt: '这篇短文主要是梳理概率方法的工具。'
-date: 2026-01-01
+excerpt: '这篇文章主要通过Alon书上的例子解释Rodl Nibble方法的实际操作过程。'
+date: 2026-01-05
 venue: '讨论班讲义资料'
 citation: "Noga Alon's Book."
 ---
@@ -102,3 +102,4 @@ The size of the edge set $E_i$ (nibbled in the $i$-th step) is bounded by:
 $$|E_i| = \frac{\varepsilon|V_{i - 1}|}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).$$
 
 The detailed proof can be found in Section 4.7 of Noga Alon's book.
+
