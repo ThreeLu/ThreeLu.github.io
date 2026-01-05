@@ -63,7 +63,7 @@ $$\lvert E_1 \rvert + \lvert V_1 \rvert \le \frac{\varepsilon_1 n}{r}(1 + \delta
 
 Now we check the parameters of Theorem 1. For any given $r,n,k,\varepsilon$, there exist $\gamma$ and $D$ such that we need a cover with at most $(1 + \varepsilon) \frac{n}{r}$ edges. The result above involves $r,n,k, \delta_1, \varepsilon_1$ (with $r,n,k$ matching Theorem 1), and $\delta_1, \varepsilon_1$ must satisfy: 
 
-$$(1 + \delta_1) \cdot \left( \varepsilon_1 + re^{-\varepsilon_1} \right) = 1 + \varepsilon. \tag{1}$$ 
+$$(1 + \delta_1) \cdot \left( \varepsilon_1 + re^{-\varepsilon_1} \right) = 1 + \varepsilon. $$ 
 
 The reason we cannot complete the proof with only one nibble is that Equation (1) cannot hold when $\varepsilon$ is sufficiently small: the function $f(x) = x + re^{-x} \ge x + 2e^{-x} \ge 1.693 > 1 + \varepsilon$. Thus we need to nibble multiple times (with carefully chosen parameters) to resolve this. The error term $re^{-x}$ will be replaced with $rx$ to fix this issue.    
 
@@ -78,7 +78,8 @@ Resuming our main discussion: we now show how to nibble twice. Recall that apply
 contains a special edge set $E'$ with parameters $\delta_2$ and $\varepsilon_2$.
 
 ### Claim
-The parameter dependency is: 
+The parameter dependency is
+
 $$D^{-1} \ll \gamma \ll \delta_1, \varepsilon_1, k_1^{-1} \ll D_1^{-1} \ll \gamma_1 \ll \delta_2, \varepsilon_2, k_2^{-1}.$$
 
 ### Remark
@@ -94,21 +95,26 @@ Since $\gamma$ and $D^{-1}$ are sufficiently small, applying Lemma 1 to $H$ yiel
 - $d(x) < k_1D < k_2D_1 = k_2De^{-\varepsilon_1(r-1)}$; 
 - $d(x,y) < \gamma D < \delta_1 D_1 = \delta_1 De^{-\varepsilon_1(r - 1)}$. 
 
-This imposes two constraints on $\delta_1$ and $k_1$:
+This imposes two constraints on $\delta_1$ and $k_1$
+
 $$k_1 < e^{-\varepsilon_1(r - 1)}k_2 \quad \text{and} \quad \gamma < \delta_1 e^{-\varepsilon_1(r - 1)}.$$
 
 There is a minor contradiction with $\gamma$: since $\gamma \ll \delta_1$, we cannot directly bound $\delta_1$ below by $\gamma$. However, we can strengthen $f(\delta, k,\varepsilon)$ to $f'(\delta, k, \varepsilon) = \{D, \min \{\gamma, \delta e^{-\varepsilon(r - 1)}\}\}$ (parameters must be re-chosen accordingly), as the proposition holds for $\gamma$ and all smaller values.    
 
 Thus we obtain a $(1 \pm \delta_1)D_1$-regular hypergraph that satisfies Lemma 1's conditions for the second nibble. We can nibble $E_2$ from $H_1$ and leave a $(1 \pm \delta_2)D_1$-regular hypergraph $H_2$ (we do not need $H_2$ for the proof). Note that $\varepsilon_1$ has no constraints in the nibble process, so we set $\varepsilon_1 = \varepsilon_2 := \varepsilon$.  
 
-For a fixed $t$, we nibble $t$ times to get edge sets $E_1, E_2, \cdots, E_t$. The parameter hierarchy generalizes to:
+For a fixed $t$, we nibble $t$ times to get edge sets $E_1, E_2, \cdots, E_t$. The parameter hierarchy generalizes to
+
 $$D^{-1}\ll \gamma \ll \delta_1, k_1^{-1} \ll \delta_2, k_2^{-1} \ll \cdots \ll \delta_t, k_t^{-1}; \varepsilon.$$
 
-For the vertex set $V_i$ remaining after the $i$-th nibble: 
+For the vertex set $V_i$ remaining after the $i$-th nibble
+
 $$\lvert V_i \rvert = \lvert V_{i - 1} \rvert e^{-\varepsilon}(1 \pm \delta_i) = \lvert V_0 \rvert e^{-i\varepsilon}\prod_{j = 1}^i(1 \pm \delta_j) \quad (1 \le i \le t).$$
 
-The size of the edge set $E_i$ (nibbled in the $i$-th step) is bounded by: 
+The size of the edge set $E_i$ (nibbled in the $i$-th step) is bounded by
+
 $$\lvert E_i \rvert = \frac{\varepsilon \lvert V_{i - 1} \rvert}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).$$
 
 The detailed proof can be found in Section 4.7 of Noga Alon's book.
+
 
