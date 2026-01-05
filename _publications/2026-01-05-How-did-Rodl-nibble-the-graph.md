@@ -9,13 +9,14 @@ venue: '讨论班讲义资料'
 citation: "Noga Alon's Book."
 ---
 
-> **Theorem 1** For every integer $r \ge 2$ and $n \ge 2$, $D^{-1} \ll \gamma \ll \varepsilon, k^{-1} \le 1$, every $r$-uniform hypergraph $H = (V,E)$ with $|V| = n$ and $d(v) > 0$ for every $v \in V$, which satisfies the following conditions: 
+> **Theorem 1**  
+> For every integer $r \ge 2$ and $n \ge 2$, $D^{-1} \ll \gamma \ll \varepsilon, k^{-1} \le 1$, every $r$-uniform hypergraph $H = (V,E)$ with $\lvert V \rvert = n$ and $d(v) > 0$ for every $v \in V$, which satisfies the following conditions:
 >
-> 1. All but at most $\gamma n$ vertices $x$ has $d(x) = (1 \pm \gamma) D$; 
-> 2. $d(x) < kD$, for all $x \in V$; 
-> 3. $d(x,y) < \gamma D$, for any two distinct vertices $x,y \in V$. 
+> (a) All but at most $\gamma n$ vertices $x$ has $d(x) = (1 \pm \gamma) D$;
+> (b) $d(x) < kD$, for all $x \in V$;
+> (c) $d(x,y) < \gamma D$, for any two distinct vertices $x,y \in V$.
 >
-> contains a cover of all but at most $(1 + \varepsilon)\left(\frac{n}{r}\right)$ edges. 
+> contains a cover of all but at most $(1 + \varepsilon)\left(\frac{n}{r}\right)$ edges.
 
 We use the following lemma to establish the nibble process. 
 
@@ -27,37 +28,38 @@ We use the following lemma to establish the nibble process.
 >
 > contains an edge set $E'$ with the following properties:
 >
-> (1) $|E'| = \left(\varepsilon \frac{n}{r}\right) (1 \pm \delta')$;  
+> (1) $\lvert E' \rvert = \left(\varepsilon \frac{n}{r}\right) (1 \pm \delta')$;  
 >
 > (2) Denote that  
 > $$V' = V - \bigcup_{e \in E'} e.$$ 
 > The cardinality 
-> $$|V'| = ne^{-\varepsilon}(1\pm \delta').$$
+> $$\lvert V' \rvert = ne^{-\varepsilon}(1\pm \delta').$$
 >
-> (3) For all but at most $\delta'|V'|$ vertices in $V'$, 
+> (3) For all but at most $\delta'\lvert V' \rvert$ vertices in $V'$, 
 > $$d_{G[V']}(x) = De^{-\varepsilon(r - 1)}(1 \pm \delta').$$
 
 Lemma 1 shows that, if we begin with an almost regular graph, we can choose some special edges which can cover almost $\varepsilon n$ vertices and make the remaining graph almost regular.  
 
 ### Proof (Proof of Theorem 1, Informal Version)
 
-Briefly speaking, we want to use Lemma 1 many times to obtain an edge set $E_1, E_2, \cdots, E_t$ from $E'$ of every step. Thus we have a vertex set sequence $V = V_0 \supseteq V_1 \supseteq \cdots \supseteq V_{t - 1} \supseteq V_t$. The remaining vertices are covered trivially (i.e., every vertex is contained into an edge). Therefore, it is sufficient to give an upper bound of $|E_1| + |E_2| + \cdots +|E_t| + |V_t|$.  
+Briefly speaking, we want to use Lemma 1 many times to obtain an edge set $E_1, E_2, \cdots, E_t$ from $E'$ of every step. Thus we have a vertex set sequence $V = V_0 \supseteq V_1 \supseteq \cdots \supseteq V_{t - 1} \supseteq V_t$. The remaining vertices are covered trivially (i.e., every vertex is contained into an edge). Therefore, it is sufficient to give an upper bound of $\lvert E_1 \rvert + \lvert E_2 \rvert + \cdots + \lvert E_t \rvert + \lvert V_t \rvert$.  
 
 The main questions we should consider are as follows:
 - Q1) Why is it possible to complete the proof by just one nibble? How can we choose $t$?  
 - Q2) The order of the parameter between different results using Lemma 1. 
 
-![fig the-nibble-lemma](_publications/fig_the-nibble-lemma.png)
+<!-- 图片插入：使用绝对路径，指向根目录的 images 文件夹 -->
+![fig the-nibble-lemma](/images/fig_the-nibble-lemma.png)
 
 **Figure 1**: Proof of Theorem 1 
 
-Schematic diagram of the nibble process for Theorem 1, showing the sequence of vertex sets $V_0=V \supseteq V_1 \supseteq V_2 \supseteq \dots \supseteq V_t$. Clearly $|V_0| = |V| = n$. 
+Schematic diagram of the nibble process for Theorem 1, showing the sequence of vertex sets $V_0=V \supseteq V_1 \supseteq V_2 \supseteq \dots \supseteq V_t$. Clearly $\lvert V_0 \rvert = \lvert V \rvert = n$. 
 
-By Lemma 1, the parameter hierarchy is $D^{-1} \ll \gamma \ll \delta_1, \varepsilon_1,k_1^{-1} $, and $H$ contains an edge set $E_1$ with $|E_1| = \left(\varepsilon_1 \frac{n}{r}\right)(1 \pm \delta_1)$ and the remaining vertex set $V_1$ with $|V_1| = ne^{-\varepsilon_1}(1 \pm \delta_1)$. 
+By Lemma 1, the parameter hierarchy is $D^{-1} \ll \gamma \ll \delta_1, \varepsilon_1,k_1^{-1} $, and $H$ contains an edge set $E_1$ with $\lvert E_1 \rvert = \left(\varepsilon_1 \frac{n}{r}\right)(1 \pm \delta_1)$ and the remaining vertex set $V_1$ with $\lvert V_1 \rvert = ne^{-\varepsilon_1}(1 \pm \delta_1)$. 
 
-Furthermore, consider the remaining hypergraph $H_1 = (V_1, E-E_1)$: for all but at most $\delta_1 |V_1|$ vertices $x$, $d_{H_1}(x) = De^{-\varepsilon_1(r - 1)}(1 \pm \delta_1)$. To digress for a moment: if we stop now (i.e., cover every vertex in $H_1$ with an edge in $E - E_1$), the number of edges we need is 
+Furthermore, consider the remaining hypergraph $H_1 = (V_1, E-E_1)$: for all but at most $\delta_1 \lvert V_1 \rvert$ vertices $x$, $d_{H_1}(x) = De^{-\varepsilon_1(r - 1)}(1 \pm \delta_1)$. To digress for a moment: if we stop now (i.e., cover every vertex in $H_1$ with an edge in $E - E_1$), the number of edges we need is 
 
-$$|E_1| + |V_1| \le \frac{\varepsilon_1 n}{r}(1 + \delta_1) + ne^{-\varepsilon_1}(1 + \delta_1) = \frac{n}{r} \cdot \left( (1 + \delta_1) \cdot \left( \varepsilon_1 + re^{-\varepsilon_1} \right) \right).$$
+$$\lvert E_1 \rvert + \lvert V_1 \rvert \le \frac{\varepsilon_1 n}{r}(1 + \delta_1) + ne^{-\varepsilon_1}(1 + \delta_1) = \frac{n}{r} \cdot \left( (1 + \delta_1) \cdot \left( \varepsilon_1 + re^{-\varepsilon_1} \right) \right).$$
 
 Now we check the parameters of Theorem 1. For any given $r,n,k,\varepsilon$, there exist $\gamma$ and $D$ such that we need a cover with at most $(1 + \varepsilon) \frac{n}{r}$ edges. The result above involves $r,n,k, \delta_1, \varepsilon_1$ (with $r,n,k$ matching Theorem 1), and $\delta_1, \varepsilon_1$ must satisfy: 
 
@@ -69,7 +71,7 @@ The reason we cannot complete the proof with only one nibble is that Equation (1
 If $\delta_1 < \delta_2$ and all but $\le \delta_1n$ vertices $x$ satisfy $d(x) = D(1 \pm \delta_1)$, then all but $\le \delta_2n$ vertices $x$ satisfy $d(x) = D(1 \pm \delta_2)$.  
 
 Resuming our main discussion: we now show how to nibble twice. Recall that applying Lemma 1 with new parameters $\delta_2, k_2, \varepsilon_2$ (and $D_1^{-1} \ll \gamma_1 \ll \delta_2, \varepsilon_2, k_2^{-1}$) implies that every $r$-uniform hypergraph $H = (V,E)$ satisfying: 
-1. All but $\le \gamma_1|V|$ vertices $x$ have $d_{H}(x) = D_1 \cdot (1 \pm \gamma_1)$; 
+1. All but $\le \gamma_1\lvert V \rvert$ vertices $x$ have $d_{H}(x) = D_1 \cdot (1 \pm \gamma_1)$; 
 2. $d_{H}(x) < k_2 \cdot D_1$ for all $x \in V$; 
 3. $d_{H}(x, y) < \gamma_1 D_1$ for any two distinct $x,y \in V$, 
 
@@ -103,9 +105,9 @@ For a fixed $t$, we nibble $t$ times to get edge sets $E_1, E_2, \cdots, E_t$. T
 $$D^{-1}\ll \gamma \ll \delta_1, k_1^{-1} \ll \delta_2, k_2^{-1} \ll \cdots \ll \delta_t, k_t^{-1}; \varepsilon.$$
 
 For the vertex set $V_i$ remaining after the $i$-th nibble: 
-$$|V_i| = |V_{i - 1}|e^{-\varepsilon}(1 \pm \delta_i) = |V_0|e^{-i\varepsilon}\prod_{j = 1}^i(1 \pm \delta_j) \quad (1 \le i \le t).$$
+$$\lvert V_i \rvert = \lvert V_{i - 1} \rvert e^{-\varepsilon}(1 \pm \delta_i) = \lvert V_0 \rvert e^{-i\varepsilon}\prod_{j = 1}^i(1 \pm \delta_j) \quad (1 \le i \le t).$$
 
 The size of the edge set $E_i$ (nibbled in the $i$-th step) is bounded by: 
-$$|E_i| = \frac{\varepsilon|V_{i - 1}|}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).$$
+$$\lvert E_i \rvert = \frac{\varepsilon \lvert V_{i - 1} \rvert}{r}(1 \pm \delta_i) = \frac{\varepsilon n}{r} e^{-(i - 1)\varepsilon} \prod_{j = 1}^i(1 \pm \delta_j)^2 \quad (1 \le i \le t).$$
 
 The detailed proof can be found in Section 4.7 of Noga Alon's book.
